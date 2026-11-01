@@ -173,10 +173,12 @@ def slug(s):
 MIN_QUALITY = 50
 
 def finalize(data, fresh, source, min_quality=MIN_QUALITY):
-    """Replace the products of `source` with `fresh` (already shaped by shape_product), rebuild suppliers, scores, stamp."""
+    """Replace the products of `source` with `fresh` (already shaped by shape_product), rebuild suppliers, scores, stamp.
+    Products of OTHER sources (e.g. the Made-in-China harvest, Nov 1 2026) keep their own quality/score and are not re-gated here."""
     prev = {p["id"]: p for p in data.get("products", [])}
-    keep = [p for p in data.get("products", []) if p.get("source") != source]
+    others = [p for p in data.get("products", []) if p.get("source") != source]
     sups = {k: v for k, v in data.get("suppliers", {}).items()}
+    mine = []
     for o in fresh:
         p, sid, s = shape_product(o)
         if p["id"] in prev:
@@ -186,27 +188,31 @@ def finalize(data, fresh, source, min_quality=MIN_QUALITY):
         old = sups.get(sid, {})
         s = {**old, **{k: v for k, v in s.items() if v not in (None, "", [])}}
         sups[sid] = s
-        keep.append(p)
-    used = {p["supplier"] for p in keep}
-    sups = {k: v for k, v in sups.items() if k in used}
-    for sid, s in sups.items():
-        ps = [p for p in keep if p["supplier"] == sid]
+        mine.append(p)
+    for sid in {p["supplier"] for p in mine}:
+        s = sups[sid]; ps = [p for p in mine if p["supplier"] == sid]
         s["quality"] = max(quality_score(s, p) for p in ps)
-    for p in keep:
+    for p in mine:
         s = sups[p["supplier"]]
         p["quality"] = quality_score(s, p)
         p["trend"] = trend_score(p)
         p["score"] = int(round(0.45 * p["quality"] + 0.30 * p["trend"] + 0.25 * size_points(p)))
-    keep = [p for p in keep if p["quality"] >= min_quality]
+    mine = [p for p in mine if p["quality"] >= min_quality]
+    keep = others + mine
     used = {p["supplier"] for p in keep}
     sups = {k: v for k, v in sups.items() if k in used}
-    keep.sort(key=lambda p: -p["score"])
-    data["products"] = keep; data["suppliers"] = sups; data["categories"] = CATEGORIES
+    keep.sort(key=lambda p: -(p.get("score") or 0))
+    data["products"] = keep; data["suppliers"] = sups
+    ids = {c["id"] for c in CATEGORIES}
+    data["categories"] = CATEGORIES + [c for c in data.get("categories", []) if c.get("id") not in ids]
     data["updated"] = datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
     data.setdefault("sources", {})[source] = data["updated"]
-    data["stats"] = {"products": len(keep), "suppliers": len(sups),
-                     "big6": sum(1 for p in keep if (p.get("max_size_rank") or 0) >= 6),
-                     "custom": sum(1 for p in keep if p.get("custom_size"))}
+    st = data.get("stats") or {}
+    st.update({"products": len(keep), "suppliers": len(sups),
+               "verified_suppliers": sum(1 for s in sups.values() if s.get("verified")),
+               "big6": sum(1 for p in keep if (p.get("max_size_rank") or 0) >= 6),
+               "custom": sum(1 for p in keep if p.get("custom_size"))})
+    data["stats"] = st
     return data
 
 def qty_he(q, unit):
