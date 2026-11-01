@@ -25,7 +25,8 @@ jobs:
           git config user.name "plus-suppliers-bot"
           git config user.email "actions@users.noreply.github.com"
           git pull --rebase --autostash || true
-          if ! git diff --quiet suppliers.json; then
+          git add mic_status.json || true
+          if ! git diff --quiet suppliers.json || ! git diff --cached --quiet; then
             git add suppliers.json
             git commit -m "refresh Made-in-China $(date -u +%Y-%m-%dT%H:%MZ)"
             git push
