@@ -21,7 +21,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "suppliers.json")
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
 MIN_KEEP = 5
-MAX_PAGES = int(os.environ.get("MIC_MAX_PAGES", "70"))
+MAX_PAGES = int(os.environ.get("MIC_MAX_PAGES", "128"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from plus_common import he_title, he_colors, he_fabric, size_rank, rank_label, quality_score, finalize, BAD_RE, WOMEN_RE
 
