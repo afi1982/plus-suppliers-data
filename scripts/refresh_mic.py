@@ -11,7 +11,7 @@ What it does:
      daily run, are left untouched), recomputes scores and the 'updated' stamp.
 If fewer than MIN_KEEP products come back (site change or block), the previous Made-in-China products stay.
 """
-import json, math, os, re, sys, time, datetime, random
+import json, math, os, re, sys, time, datetime, random, collections
 import urllib.parse
 import requests
 SESSION = requests.Session()
@@ -149,10 +149,10 @@ def good(o):
 def main():
     data = json.load(open(DATA, encoding="utf-8"))
     seen, fresh = set(), []
-    pages = 0
+    pages = 0; searches_ok = 0; errors = collections.Counter()
     for cat, q in QUERIES:
-        try: links = search(q)
-        except Exception as e: print("search failed", q, e); continue
+        try: links = search(q); searches_ok += 1
+        except Exception as e: print("search failed", q, e); errors[str(e)[:40]] += 1; continue
         print(q, len(links))
         for u in links[:8]:
             if u in seen or pages >= MAX_PAGES: continue
@@ -160,12 +160,15 @@ def main():
             try:
                 o = parse_product(u, get(u), cat)
             except Exception as e:
-                print("  page failed", u[-50:], e); continue
+                print("  page failed", u[-50:], e); errors[str(e)[:40]] += 1; continue
             time.sleep(1.0 + random.random())
             if o and good(o):
                 n_sup = sum(1 for f in fresh if f["sup"].get("name") == o["sup"].get("name"))
                 if n_sup < 3: fresh.append(o); print("  +", o["title_en"][:70])
     print("made-in-china: kept", len(fresh), "of", pages, "pages")
+    status = {"at": datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z", "searches_ok": searches_ok, "searches": len(QUERIES),
+              "pages": pages, "kept": len(fresh), "errors": dict(errors), "written": len(fresh) >= MIN_KEEP}
+    json.dump(status, open(os.path.join(ROOT, "mic_status.json"), "w"), indent=1)
     if len(fresh) < MIN_KEEP:
         print("too few, keeping the previous Made-in-China products"); return 0
     finalize(data, fresh, source="Made-in-China")
