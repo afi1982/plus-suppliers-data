@@ -1954,60 +1954,6 @@
    "score": 68
   },
   {
-   "id": "ali-1600744062420",
-   "source": "Alibaba",
-   "cat": "sport",
-   "title_en": "Pink Black Orange Lace up Fitness Yoga Wear Plus Size for XS-8XL Women's Sweat Slimming Belt with Waist Trimmer",
-   "title_he": "פריט לבוש · עם חגורה · תחרה · עד 8XL",
-   "img": "https://s.alicdn.com/@sc04/kf/H7a0debefca8046bca70329988174d510G.jpg_960x960q80.jpg",
-   "imgs": [
-    "https://s.alicdn.com/@sc04/kf/H7a0debefca8046bca70329988174d510G.jpg_960x960q80.jpg",
-    "https://s.alicdn.com/@sc04/kf/He2f417b6d00d4a48bab6cb53c97d16cf8.jpg_960x960q80.jpg",
-    "https://s.alicdn.com/@sc04/kf/H275b7d3c6a29463e97333c883740daf34.jpg_960x960q80.jpg",
-    "https://s.alicdn.com/@sc04/kf/Hc181ca14f0a34ba2a9258d406cd370a1V.jpg_960x960q80.jpg",
-    "https://s.alicdn.com/@sc04/kf/H9e203d6535ad4216b7194f0bc4cea98fh.jpg_960x960q80.jpg",
-    "https://s.alicdn.com/@sc04/kf/H697b32e177214ac5bd1ec8a55e79d571X.jpg_960x960q80.jpg"
-   ],
-   "price_min": 4.84,
-   "price_max": 4.84,
-   "price_moq": 4.84,
-   "contact_url": "https://message.alibaba.com/msgsend/contact.htm?action=contact_action&appFrom=pc_detail&itemId=1600744062420&chkProductIds=1600744062420",
-   "tiers": [
-    {
-     "qty_he": "500 יח׳ ומעלה",
-     "price": 4.84
-    }
-   ],
-   "moq": 500,
-   "unit": "pieces",
-   "max_size": "8XL",
-   "max_size_rank": 8,
-   "custom_size": false,
-   "sizes_he": "XL–8XL",
-   "colors_he": [
-    "כתום",
-    "שחור",
-    "ורוד"
-   ],
-   "fabric_he": "",
-   "sample_he": "לבקש דוגמה בצ׳אט",
-   "lead_he": "",
-   "sold": null,
-   "reorder": 30,
-   "rating": null,
-   "nrev": 0,
-   "reviews": [],
-   "hot": "",
-   "hot_rank": null,
-   "url": "https://www.alibaba.com/product-detail/Pink-Black-Orange-Lace-up-Fitness_1600744062420.html",
-   "supplier": "foshan-qianfa-clothing-co-ltd",
-   "checked": "2026-11-04T13:00:47.714Z",
-   "first_seen": "2026-11-04T13:00:47.714Z",
-   "quality": 90,
-   "trend": 8,
-   "score": 68
-  },
-  {
    "id": "mic-2087198395",
    "source": "Made-in-China",
    "cat": "dresses",
@@ -3371,7 +3317,7 @@
    "source": "Alibaba",
    "cat": "sport",
    "title_en": "Custom Plus Size Yoga Wear Women 4XL-6XL High Waist Tummy Control 4-Way Stretch Leggings Moisture Wicking Breathable Gym Set",
-   "title_he": "סט ספורט · גזרה גבוהה · עד 6XL",
+   "title_he": "סט כושר: טייץ בגזרה גבוהה עם הידוק בטן, בד נושם ונמתח · עד 6XL",
    "img": "https://s.alicdn.com/@sc04/kf/Haa729b94110f4ecfa4fafd9123385afcu.jpg_960x960q80.jpg",
    "imgs": [
     "https://s.alicdn.com/@sc04/kf/Haa729b94110f4ecfa4fafd9123385afcu.jpg_960x960q80.jpg",
@@ -3427,7 +3373,8 @@
    "first_seen": "2026-11-04T13:00:27.059Z",
    "quality": 90,
    "trend": 10,
-   "score": 66
+   "score": 66,
+   "title_he_manual": true
   },
   {
    "id": "ali-1601024765724",
@@ -3499,7 +3446,8 @@
    "first_seen": "2026-11-04T13:03:22.158Z",
    "quality": 89,
    "trend": 12,
-   "score": 66
+   "score": 66,
+   "title_he_manual": true
   },
   {
    "id": "mic-2186515822",
@@ -5955,7 +5903,7 @@
    "source": "Alibaba",
    "cat": "dresses",
    "title_en": "Plus Size 2026 Women Floral Print 3/4 Sleeves Stretchy Maxi Wrap Dress 1XL 2XL 3XL 4XL 5XL 6XL",
-   "title_he": "שמלת מקסי · שרוול 3/4 · מעטפת · הדפס פרחוני · עד 5XL",
+   "title_he": "שמלת מקסי מעטפת בהדפס פרחוני, שרוול 3/4, בד נמתח · עד 5XL",
    "img": "https://s.alicdn.com/@sc04/kf/H8a7ed5602bde481889a2a5d5bef2cf87R.jpg_960x960q80.jpg",
    "imgs": [
     "https://s.alicdn.com/@sc04/kf/H8a7ed5602bde481889a2a5d5bef2cf87R.jpg_960x960q80.jpg",
@@ -6016,7 +5964,8 @@
    "first_seen": "2026-11-04T13:03:44.944Z",
    "quality": 88,
    "trend": 20,
-   "score": 58
+   "score": 58,
+   "title_he_manual": true
   },
   {
    "id": "mic-1948819985",
@@ -6341,7 +6290,7 @@
    "source": "Alibaba",
    "cat": "sport",
    "title_en": "Women's Plus Size Summer Tennis Golf Skirt S-6XL Moisture-Wicking Yoga Skort Built-in Shorts Running Training Athletic",
-   "title_he": "חצאית · עד 6XL",
+   "title_he": "חצאית-מכנס לטניס, גולף ויוגה עם מכנסון פנימי, סופגת זיעה · עד 6XL",
    "img": "https://s.alicdn.com/@sc04/kf/H5f0d0e4f42fd41719bf637f90f08ab4bR.jpg_960x960q80.jpg",
    "imgs": [
     "https://s.alicdn.com/@sc04/kf/H5f0d0e4f42fd41719bf637f90f08ab4bR.jpg_960x960q80.jpg",
@@ -6384,7 +6333,8 @@
    "first_seen": "2026-11-04T12:58:30.729Z",
    "quality": 73,
    "trend": 4,
-   "score": 57
+   "score": 57,
+   "title_he_manual": true
   },
   {
    "id": "mic-1968241882",
@@ -28258,29 +28208,6 @@
     "quality": 4.6
    },
    "quality": 73
-  },
-  "foshan-qianfa-clothing-co-ltd": {
-   "name": "Foshan Qianfa Clothing Co., Ltd.",
-   "name_short": "Foshan Qianfa Clothing",
-   "platform": "Alibaba",
-   "verified": true,
-   "verified_by": "TüVRheinland",
-   "years": 11,
-   "rating": 4.9,
-   "reviews": 2395,
-   "response_time": "≤3h",
-   "response_time_he": "עד 3 שעות",
-   "ontime": 90.1,
-   "trade_assurance": true,
-   "type_he": "יצרן בהתאמה אישית",
-   "location": "Foshan, Guangdong, CN",
-   "store_url": "https://fsqianfa.en.alibaba.com/",
-   "sub": {
-    "service": 4.9,
-    "shipping": 4.9,
-    "quality": 4.9
-   },
-   "quality": 90
   }
  },
  "sources": {
@@ -28347,10 +28274,10 @@
  ],
  "updated": "2026-11-04T13:03:45Z",
  "stats": {
-  "products": 814,
-  "suppliers": 245,
-  "verified_suppliers": 245,
-  "big6": 55,
+  "products": 813,
+  "suppliers": 244,
+  "verified_suppliers": 244,
+  "big6": 54,
   "custom": 102,
   "per_type": {
    "dresses": 60,
