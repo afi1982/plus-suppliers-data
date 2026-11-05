@@ -8,13 +8,19 @@ Steps: 14 item types x 4-6 plus-size phrasings x 3 pages of m.made-in-china.com 
  -> read every remaining supplier's profile (member level, audit, SGS, est. year)
  -> keep VERIFIED only (Audited Supplier, Diamond/Gold member, or SGS)
  -> per type pick up to TARGET (6XL+ first, then supplier quality), max 3 per supplier per type, 8 per supplier overall
- -> read each picked product's page <head> for its size range / material (drops ones whose sizes stop under 4XL)
+ -> read each picked product's WHOLE page for its stated size range (v1.5.6: size_ok=True only when the page states it;
+    title claims stay unverified; verified ranges under 4XL are dropped) and material
  -> replaces the source=="Made-in-China" products, keeps Alibaba ones; writes mic_status.json.
 Never contacts, signs up with or pays anyone.
 """
 import json, re, sys, os, time, datetime, html as H, urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 import requests
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from sizeparse import size_scan, page_text, CUSTOM_RE
+
+def size_ok(p):  # Alibaba rows: max size comes from the product page's size selector (refresh_alibaba.py) -> verified
+    return bool(p.get("size_ok") or (p.get("source") == "Alibaba" and p.get("max_size_rank") and p.get("sizes_he") and "לפי שם המוצר" not in p.get("sizes_he")))
 
 UA = "Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36"
 HDR = {"User-Agent": UA, "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Accept-Language": "en-US,en;q=0.9"}
@@ -297,8 +303,13 @@ def main():
         return chosen
     over = pick(int(TARGET * 1.5))
     allp = [it for v in over.values() for it in v]
-    def spec(it):
-        try: return it["pid"], parse_specs(get(it["url"], stop=["</head>"]))
+    def spec(it):  # v1.5.6: whole page (not only <head>) -> verified size range
+        try:
+            h = get(it["url"], stop=["Customers also viewed"])
+            s = parse_specs(h)
+            pr, ps = size_scan(page_text(h, it["title"]))
+            s["page_rank"] = pr; s["size"] = ps or s["size"]; s["custom"] = s["custom"] or bool(CUSTOM_RE.search(h))
+            return it["pid"], s
         except Exception: return it["pid"], None
     SP = {}
     with ThreadPoolExecutor(THREADS) as ex:
@@ -307,12 +318,16 @@ def main():
     for it in allp:
         s = SP.get(it["pid"])
         if s:
-            it["rank"] = max(it["rank"], s["rank"]); it["custom"] = it["custom"] or s["custom"]
-            it["size_txt"] = s["size"]; it["material"] = s["material"]
-            if 0 < it["rank"] < 4 and not it["custom"]: bad.add(it["pid"])
+            it["custom"] = it["custom"] or s["custom"]; it["material"] = s["material"]
+            if s.get("page_rank"):  # the page states its size range: that is the verified max size (v1.5.6)
+                it["rank"] = s["page_rank"]; it["size_ok"] = True; it["size_txt"] = s["size"]
+                if it["rank"] < 4: bad.add(it["pid"])  # verified to stop under 4XL -> not plus size (QA Nov 3, bug 1)
+            else:
+                it["rank"] = max(it["rank"], s["rank"]); it["size_ok"] = False; it["size_txt"] = None  # title/keyword claim only
     drops["small_sizes_page"] = len(bad)
-    for tid in pool:  # re-rank with the page sizes
-        pool[tid].sort(key=lambda it: (-(min(it["rank"], 8) >= 6 or it["custom"]), -it["q"], -min(it["rank"], 8)))
+    drops["size_unverified"] = sum(1 for it in allp if not it.get("size_ok"))
+    for tid in pool:  # re-rank: verified 6XL+ first, then verified 4-5XL, then unverified; quality inside each
+        pool[tid].sort(key=lambda it: (-(bool(it.get("size_ok")) and min(it["rank"], 8) >= 6), -bool(it.get("size_ok")), -it["q"], -min(it["rank"], 8)))
     final = pick(TARGET, exclude=bad)
     # build products + suppliers
     tdef = {t[0]: t for t in TYPES}
@@ -331,18 +346,19 @@ def main():
                     "verified_by": " · ".join(badge_he) + " (Made-in-China)", "badge": " · ".join(badge), "member": {"diamond": "Diamond", "gold": "Gold"}.get(lv),
                     "years": y or None, "years_kind": yk, "est": p.get("est"), "type_he": "יצרן / מפעל" if "Manufacturer" in it["btype"] else ("חברת סחר" if it["btype"] else None),
                     "location": it["loc"] or None, "store_url": "https://m.made-in-china.com/company-%s/" % it["sub"], "contact_url": it["inq"], "quality": it["q"]}.items() if v not in (None, "")}
-            rank = min(it["rank"], 12)
+            rank = min(it["rank"], 12); ok = bool(it.get("size_ok"))
             img = it["img"] or ""
             full = re.sub(r"/\d{3}f0j00", "/2f0j00", img).replace(".webp", ".jpg") if img else ""
-            sizes = (it.get("size_txt") or "")[:60]
+            sizes = re.sub(r"\s+", " ", (it.get("size_txt") or ""))[:60] if ok else ""
             if not re.search(r"\dXL|XXL|XL", sizes, re.I): sizes = ""
             trend = 40 if re.search(r"\b202[56]\b|new arrival|new design|trend|fashion", it["title"], re.I) else 20
-            sizep = 100 if rank >= 6 or it["custom"] else rank * 15
+            sizep = (100 if rank >= 6 else rank * 15) if ok else 30
             pr = {"id": "mic-" + it["pid"], "source": "Made-in-China", "cat": t[1], "type": tid,
-                  "title_en": it["title"], "title_he": he_title(t, it["title"], rank, it["custom"]),
+                  "title_en": it["title"], "title_he": he_title(t, it["title"], rank if ok else 0, False),
                   "img": img, "imgs": [full] if full else [], "price_min": it["pmin"], "price_max": it["pmax"], "price_moq": it["pmax"],
                   "moq": it["moq"], "unit": "sets" if re.search(r"set", it["unit"] or "") else "pieces",
                   "max_size": ("%dXL" % rank) if rank >= 2 else None, "max_size_rank": rank or None, "custom_size": it["custom"] or None,
+                  "size_ok": ok or None,
                   "sizes_he": (sizes + " (לפי דף המוצר; לבקש טבלה בס״מ)") if sizes else None,
                   "fabric_he": fabric_he(it.get("material")) or None, "url": it["url"], "contact_url": it["inq"], "supplier": skey,
                   "badge": " · ".join(badge_he), "years": y or None,
@@ -367,7 +383,8 @@ def main():
     allsup = {p["supplier"] for p in data["products"]}
     data["stats"] = {"products": len(data["products"]), "suppliers": len(allsup),
                      "verified_suppliers": sum(1 for s in allsup if data["suppliers"].get(s, {}).get("verified")),
-                     "big6": sum(1 for p in data["products"] if (p.get("max_size_rank") or 0) >= 6), "custom": sum(1 for p in data["products"] if p.get("custom_size")),
+                     "big6": sum(1 for p in data["products"] if size_ok(p) and (p.get("max_size_rank") or 0) >= 6), "custom": sum(1 for p in data["products"] if p.get("custom_size")),
+                     "size_verified": sum(1 for p in data["products"] if size_ok(p)), "size_unverified": sum(1 for p in data["products"] if not size_ok(p)),
                      "per_type": st["per_type"]}
     json.dump(data, open(out, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     json.dump(st, open(os.path.join(os.path.dirname(out) or ".", "mic_status.json"), "w"), indent=1)
