@@ -2,6 +2,8 @@ name: refresh-made-in-china
 on:
   schedule:
     - cron: "23 */6 * * *"
+    # v1.5.6 backup trigger: GitHub sometimes skips scheduled runs (QA Nov 3: 5 runs in 48 h instead of 8)
+    - cron: "41 3,9,15,21 * * *"
   workflow_dispatch: {}
 permissions:
   contents: write
