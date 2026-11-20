@@ -1,36 +1,36 @@
 {
- "started": "2026-11-20T12:11:50Z",
+ "started": "2026-11-20T20:32:08Z",
  "searches": 198,
  "searches_ok": 198,
  "errors": [],
  "raw": 7052,
- "kept": 777,
- "suppliers": 223,
+ "kept": 770,
+ "suppliers": 228,
  "per_type": {
   "dresses": 60,
   "tops": 60,
   "jeans": 52,
   "pants": 60,
-  "skirts": 36,
+  "skirts": 33,
   "hoodies": 60,
-  "knit": 34,
+  "knit": 33,
   "jackets": 60,
   "leggings": 60,
   "sport": 60,
   "sets": 60,
   "lingerie": 60,
   "swim": 60,
-  "pajamas": 55
+  "pajamas": 52
  },
  "drops": {
-  "not_clothing": 431,
-  "men_kids": 687,
-  "not_plus": 1110,
-  "other_type": 451,
-  "unverified": 125,
-  "small_sizes_page": 382,
-  "size_unverified": 497
+  "not_clothing": 453,
+  "men_kids": 674,
+  "not_plus": 1074,
+  "other_type": 460,
+  "unverified": 126,
+  "small_sizes_page": 389,
+  "size_unverified": 509
  },
- "finished": "2026-11-20T12:13:47Z",
+ "finished": "2026-11-20T20:34:25Z",
  "other_kept": 22
 }
